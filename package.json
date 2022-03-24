@@ -1,0 +1,66 @@
+{
+	"$schema": "https://json.schemastore.org/package",
+	"name": "strapi-plugin-io",
+	"version": "0.1.0",
+	"description": "A plugin for Strapi CMS that provides the ability for Socket IO integration",
+	"scripts": {
+		"lint": "eslint . --fix",
+		"format": "prettier --write **/*.{ts,js,json,yml}"
+	},
+	"author": {
+		"name": "@ComfortablyCoding",
+		"url": "https://github.com/ComfortablyCoding"
+	},
+	"maintainers": [
+		{
+			"name": "@ComfortablyCoding",
+			"url": "https://github.com/ComfortablyCoding",
+			"lead": true
+		},
+		{
+			"name": "@hrdunn",
+			"url": "https://github.com/hrdunn"
+		}
+	],
+	"homepage": "https://github.com/ComfortablyCoding/strapi-plugin-slugify#readme",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/ComfortablyCoding/strapi-plugin-slugify.git"
+	},
+	"bugs": {
+		"url": "https://github.com/ComfortablyCoding/strapi-plugin-slugify/issues"
+	},
+	"dependencies": {
+		"socket.io": "^4.4.1"
+	},
+	"devDependencies": {
+		"@strapi-community/eslint-config": "^0.2.0",
+		"eslint": "^8.11.0",
+		"eslint-config-prettier": "^8.5.0",
+		"prettier": "^2.6.0"
+	},
+	"peerDependencies": {
+		"@strapi/strapi": "^4.1.5",
+		"lodash": "^4.17.21",
+		"yup": "^0.32.11"
+	},
+	"strapi": {
+		"name": "io",
+		"displayName": "IO",
+		"description": "A plugin for Strapi CMS that provides the ability for Socket IO integration",
+		"kind": "plugin"
+	},
+	"engines": {
+		"node": ">=12.x.x <=16.x.x",
+		"npm": ">=6.0.0"
+	},
+	"keywords": [
+		"strapi",
+		"strapi-plugin",
+		"plugin",
+		"strapi plugin",
+		"socket io",
+		"io"
+	],
+	"license": "MIT"
+}
