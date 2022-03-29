@@ -73,7 +73,6 @@ This will emit all events for the messages content type and only the create even
 - `update`
 - `publish`
 - `unpublish`
-- `bulkDelete`
 
 ## Emit Syntax
 
@@ -119,7 +118,7 @@ const { io } = require("socket.io-client");
 const SERVER_URL = "http://localhost:1337";
 const JWT_TOKEN = "your users JWT token";
 
-// Handshake required, token will be verified against strapi
+// token will be verified, connection will be rejected if not a valid JWT
 const socket = io(SERVER_URL, {
   auth: { 
     token: JWT_TOKEN
