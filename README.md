@@ -42,7 +42,7 @@ module.exports = ({ env }) => ({
         "cors": { "origin": "http://localhost:5000", "methods": ["GET"] },
       },
       "contentTypes": {
-        "message": *,
+        "message": "*",
         "chat":["create"]
       },
     },
