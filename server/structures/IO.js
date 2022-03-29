@@ -18,7 +18,7 @@ class IO {
 
 	/**
 	 * Retrieves all rooms (roles) defined in strapi
-	 * 
+	 *
 	 */
 	// eslint-disable-next-line class-methods-use-this
 	_getRooms() {
@@ -34,7 +34,7 @@ class IO {
 
 	/**
 	 * Emits an event to all roles that have permission to access the specified model.
-	 * 
+	 *
 	 * @param {string} model The model uid
 	 * @param {object} entity The entity record data
 	 */
@@ -57,7 +57,8 @@ class IO {
 	 * @param {object} options Additional emit options
 	 * @param {string} options.room The room to emit to
 	 */
-	async raw(event, data, { room }) {
+	async raw(event, data, options = {}) {
+		const { room } = options;
 		const emitter = this._socket;
 		if (room && room.length) {
 			emitter.to(room);
