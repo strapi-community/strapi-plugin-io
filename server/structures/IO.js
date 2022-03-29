@@ -16,6 +16,10 @@ class IO {
 		return `${apiName}:${action}`;
 	}
 
+	/**
+	 * Retrieves all rooms (roles) defined in strapi
+	 * 
+	 */
 	// eslint-disable-next-line class-methods-use-this
 	_getRooms() {
 		return strapi.entityService.findMany('plugin::users-permissions.role', {
@@ -28,6 +32,12 @@ class IO {
 		});
 	}
 
+	/**
+	 * Emits an event to all roles that have permission to access the specified model.
+	 * 
+	 * @param {string} model The model uid
+	 * @param {object} entity The entity record data
+	 */
 	async emit(model, entity) {
 		const event = this._buildEventName(model);
 		const rooms = await this._getRooms();
@@ -37,6 +47,22 @@ class IO {
 				this._socket.to(room.name).emit(event, entity);
 			}
 		}
+	}
+
+	/**
+	 * Emits an event with no additional validation
+	 *
+	 * @param {string} event The event to emit
+	 * @param {any} data The data to emit
+	 * @param {object} options Additional emit options
+	 * @param {string} options.room The room to emit to
+	 */
+	async raw(event, data, { room }) {
+		const emitter = this._socket;
+		if (room && room.length) {
+			emitter.to(room);
+		}
+		emitter.emit(event, data);
 	}
 }
 
