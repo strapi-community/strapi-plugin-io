@@ -39,11 +39,11 @@ module.exports = ({ env }) => ({
     "enabled": true,
     "config": {
       "IOServerOptions" :{
-        "cors": { origin: "http://localhost:5000", methods: ["GET"] },
-      }
+        "cors": { "origin": "http://localhost:5000", "methods": ["GET"] },
+      },
       "contentTypes": {
-        "messages": *,
-        "chats":["create"]
+        "message": "*",
+        "chat":["create"]
       },
     },
   },
@@ -62,8 +62,9 @@ This will emit all events for the messages content type and only the create even
 | IOServerOptions | The [Socket IO Server Options](https://socket.io/docs/v4/server-options). | Object | {} | No
 | contentTypes | The Content Types to emit events for. A "*" can be used to listen for all content types and events. | Object `or` String | {} | No |
 | contentTypes[apiName] | The events to listen for on the given content type. The apiName is the `singularName` in the [model schema](https://docs.strapi.io/developer-docs/latest/development/backend-customization/models.html#model-schema). The value can be an array of events or a "*" to listen for all. | Array `or` String | N/A | Yes |
+| publicRoleName | The name of the default role to be assigned to unauthenticated connections | String | "Public" | No
 
-### Currently Supported Emit events
+## Currently Supported Emit events
 
 - `find`
 - `findOne`
@@ -77,6 +78,55 @@ This will emit all events for the messages content type and only the create even
 ## Emit Syntax
 
 All events emitted have the following syntax `singularName:action`.
+
+## Emitting Custom Events
+
+The server socket instance is attached to the strapi object. A custom event can be emitted like so
+
+```javascript
+strapi.$io.emit("customEvent", data);
+```
+
+## Example Client Connections
+
+Below are example client socket configurations.
+
+### Unauthenticated User connection
+
+```javascript
+const { io } = require("socket.io-client");
+const API_URL = "http://localhost:1337";
+const socket = io(API_URL);
+
+//  wait until socket connects before adding event listeners
+socket.on("connect", () => {
+  socket.on("message:update", (data) => {
+    console.log(data)
+  });
+});
+```
+
+### Authenticated User connection
+
+```javascript
+const { io } = require("socket.io-client");
+const API_URL = "http://localhost:1337";
+const JWT_TOKEN = "your users JWT token";
+
+// Handshake required, token will be verified against strapi
+const socket = io(API_URL, {
+  auth: { 
+    token: JWT_TOKEN
+  },
+});
+
+//  wait until socket connects before adding event listeners
+socket.on("connect", () => {
+  socket.on("message:update", (data) => {
+    console.log(data)
+  });
+});
+```
 
 ## Bugs
 
