@@ -83,7 +83,13 @@ All events emitted have the following syntax `singularName:action`.
 The server socket instance is attached to the strapi object. A custom event can be emitted like so
 
 ```javascript
-strapi.$io.emit("customEvent", data);
+strapi.$io.raw("customEvent", data);
+```
+
+The above emit will not verify any permissions before emitting. If you wish to make a verified event the emit function can be used.
+
+```javascript
+strapi.$io.emit("api::message.message.someCustomAction", data);
 ```
 
 ## Example Client Connections
@@ -94,8 +100,8 @@ Below are example client socket configurations.
 
 ```javascript
 const { io } = require("socket.io-client");
-const API_URL = "http://localhost:1337";
-const socket = io(API_URL);
+const SERVER_URL = "http://localhost:1337";
+const socket = io(SERVER_URL);
 
 //  wait until socket connects before adding event listeners
 socket.on("connect", () => {
@@ -109,11 +115,11 @@ socket.on("connect", () => {
 
 ```javascript
 const { io } = require("socket.io-client");
-const API_URL = "http://localhost:1337";
+const SERVER_URL = "http://localhost:1337";
 const JWT_TOKEN = "your users JWT token";
 
 // token will be verified, connection will be rejected if not a valid JWT
-const socket = io(API_URL, {
+const socket = io(SERVER_URL, {
   auth: { 
     token: JWT_TOKEN
   },
