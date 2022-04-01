@@ -17,11 +17,11 @@ class IO {
 	}
 
 	/**
-	 * Retrieves all rooms (roles) defined in strapi
+	 * Retrieves all strapi rooms (roles).
 	 *
 	 */
 	// eslint-disable-next-line class-methods-use-this
-	_getRooms() {
+	_getStrapiRooms() {
 		return strapi.entityService.findMany('plugin::users-permissions.role', {
 			fields: ['name'],
 			populate: {
@@ -40,7 +40,7 @@ class IO {
 	 */
 	async emit(model, entity) {
 		const event = this._buildEventName(model);
-		const rooms = await this._getRooms();
+		const rooms = await this._getStrapiRooms();
 
 		for (const room of rooms) {
 			if (room.permissions.find((per) => per.action === model)) {
@@ -64,6 +64,13 @@ class IO {
 			emitter.to(room);
 		}
 		emitter.emit(event, data);
+	}
+
+	/**
+	 *  Returns the server socket
+	 */
+	get socket() {
+		return this._socket;
 	}
 }
 
