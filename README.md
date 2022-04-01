@@ -45,13 +45,25 @@ module.exports = ({ env }) => ({
         "message": "*",
         "chat":["create"]
       },
+      "events":[
+        {
+          "name": "connection",
+          "handler": ({ strapi }, socket) => {
+            strapi.log.info(`[io] new connection with id ${socket.id}`);
+          },
+        },
+      ]
     },
   },
   // ...
 });
 ```
 
-This will emit all events for the messages content type and only the create event for the chats content type.
+The above configuration will do the following:
+
+  1. Set the IO server options.
+  2. Emit all events for the messages content type and only the create event for the chats content type.
+  3. Log the socket id of any newly connected sockets.
 
 **IMPORTANT NOTE**: Make sure any sensitive data is stored in env files.
 
@@ -62,6 +74,9 @@ This will emit all events for the messages content type and only the create even
 | IOServerOptions | The [Socket IO Server Options](https://socket.io/docs/v4/server-options). | Object | {} | No
 | contentTypes | The Content Types to emit events for. A "*" can be used to listen for all content types and events. | Object `or` String | {} | No |
 | contentTypes[apiName] | The events to listen for on the given content type. The apiName is the `singularName` in the [model schema](https://docs.strapi.io/developer-docs/latest/development/backend-customization/models.html#model-schema). The value can be an array of events or a "*" to listen for all. | Array `or` String | N/A | Yes |
+| events | Any server server side events to listen for | Array | [] | No |
+| events[x].name | The event name (case sensitive) | String | N/A | Yes |
+| events[x].handler | The function to execute when the event is triggered. The handlers first argument is the ctx containing the strapi instance, the subsequent parameters are in the same order as in the client emit event. For the built in "connection" event the subsequent parameter is the socket. | Function | N/A | Yes
 | publicRoleName | The name of the default role to be assigned to unauthenticated connections | String | "Public" | No
 
 ## Currently Supported Emit events
