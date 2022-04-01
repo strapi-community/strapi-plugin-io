@@ -7,6 +7,7 @@ module.exports = {
 		return {
 			IOServerOptions: {},
 			contentTypes: {},
+			events: [],
 			publicRoleName: 'Public',
 		};
 	},

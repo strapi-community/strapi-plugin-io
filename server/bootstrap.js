@@ -15,6 +15,25 @@ module.exports = async ({ strapi }) => {
 	await settingsService.set(normalizedSettings);
 
 	// setup io
+	// initialize
 	strapi.$io = new IO(normalizedSettings.IOServerOptions);
+
+	// add io middleware
 	IOMiddleware({ strapi });
+
+	// add any io server events
+	if (normalizedSettings.events && normalizedSettings.events.length) {
+		strapi.$io.socket.on('connection', (socket) => {
+			for (const event of normalizedSettings.events) {
+				// "connection" trigger should be executed immediately
+				if (event.name === 'connection') {
+					event.handler({ strapi }, socket);
+					continue;
+				}
+
+				// register all other events to be triggered at a later time
+				socket.on(event.name, (...data) => event.handler({ strapi, io: strapi.$io }, ...data));
+			}
+		});
+	}
 };

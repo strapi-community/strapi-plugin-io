@@ -39,6 +39,15 @@ const pluginConfigSchema = yup.object().shape({
 
 		return yup.object().shape(shape);
 	}),
+	events: yup.array().of(
+		yup.object().shape({
+			name: yup.string().required('An event name is required'),
+			handler: yup
+				.mixed()
+				.test((v) => typeof v === 'function')
+				.required('A handler function is required'),
+		})
+	),
 	publicRoleName: yup.string(),
 });
 
