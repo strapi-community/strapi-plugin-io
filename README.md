@@ -107,6 +107,12 @@ The above emit will not verify any permissions before emitting. If you wish to m
 strapi.$io.emit("api::message.message.someCustomAction", data);
 ```
 
+If you would like to emit to a specific room or Socket User Id that can be done like so.
+```javascript
+strapi.$io.raw("customEvent", data. {room: "SOCKET_ID"});
+```
+
+
 ## Example Client Connections
 
 Below are example client socket configurations.

@@ -61,9 +61,10 @@ class IO {
 		const { room } = options;
 		const emitter = this._socket;
 		if (room && room.length) {
-			emitter.to(room);
+			emitter.to(room).emit(event, data);
+		} else {
+			emitter.emit(event, data);
 		}
-		emitter.emit(event, data);
 	}
 
 	/**
