@@ -58,14 +58,13 @@ class IO {
 	 * @param {string} options.room The room to emit to
 	 */
 	async raw(event, data, options = {}) {
-		const { room } = options;
-		const emitter = this._socket;
-		if (room && room.length) {
-			emitter.to(room).emit(event, data);
-		} else {
-			emitter.emit(event, data);
-		}
-	}
+        const { room } = options;
+        let emitter = this._socket;
+        if (room && room.length) {
+            emitter= emitter.to(room);
+        }
+        emitter.emit(event, data);
+    }
 
 	/**
 	 *  Returns the server socket
