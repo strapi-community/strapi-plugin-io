@@ -43,13 +43,33 @@ module.exports = ({ env }) => ({
       },
       "contentTypes": {
         "message": "*",
-        "chat":["create"]
+        "chat": ["create"]
       },
-      "events":[
+      "events": [
         {
           "name": "connection",
           "handler": ({ strapi }, socket) => {
             strapi.log.info(`[io] new connection with id ${socket.id}`);
+          },
+        },
+        {
+          "name": "hello",
+          "handler": ({ strapi, socket }) => {
+            strapi.log.info(`[io] hello ${socket.id}`);
+          },
+        },
+        {
+          "name": "hello-response",
+          "handler": ({ strapi, socket }, callback) => {
+            strapi.log.info(`[io] hello ${socket.id}`);
+            callback("Hello, there!")
+          },
+        },
+        {
+          "name": "hello-response-data",
+          "handler": ({ strapi, socket }, data, callback) => {
+            strapi.log.info(`[io] hello ${socket.id}, data ${data}`);
+            callback("Hello, there!")
           },
         },
       ]
