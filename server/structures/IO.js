@@ -59,9 +59,9 @@ class IO {
 	 */
 	async raw(event, data, options = {}) {
 		const { room } = options;
-		const emitter = this._socket;
+		let emitter = this._socket;
 		if (room && room.length) {
-			emitter.to(room);
+			emitter = emitter.to(room);
 		}
 		emitter.emit(event, data);
 	}
