@@ -27,12 +27,14 @@ module.exports = async ({ strapi }) => {
 			for (const event of normalizedSettings.events) {
 				// "connection" trigger should be executed immediately
 				if (event.name === 'connection') {
-					event.handler({ strapi }, socket);
+					event.handler({ strapi, io: strapi.$io, socket });
 					continue;
 				}
 
 				// register all other events to be triggered at a later time
-				socket.on(event.name, (...data) => event.handler({ strapi, io: strapi.$io }, ...data));
+				socket.on(event.name, (...data) =>
+					event.handler({ strapi, io: strapi.$io, socket }, ...data)
+				);
 			}
 		});
 	}
