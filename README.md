@@ -118,7 +118,7 @@ strapi.$io.raw("customEvent", data);
 #### Raw emit to a specific room
 
 ```javascript
-strapi.$io.raw("customEvent", data. {room: "SOCKET_ID"});
+strapi.$io.raw("customEvent", data, {room: "SOCKET_ID"});
 ```
 
 ## Example Client Connections
