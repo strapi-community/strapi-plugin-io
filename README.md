@@ -95,16 +95,30 @@ All events emitted have the following syntax `singularName:action`.
 
 ## Emitting Custom Events
 
-The server socket instance is attached to the strapi object. A custom event can be emitted like so
+The server socket instance is attached to the strapi object. Custom event can be emitted via the emit or raw method.
+
+### Emit
+
+The emit function accepts a specific event format (api::singularName.singularName.actionName) and will automatically verify permissions for all strapi roles (rooms).
+
+```javascript
+strapi.$io.emit("api::message.message.someCustomAction", data);
+```
+
+### Raw
+
+A raw emit **will not** verify any permissions before emitting.
+
+#### Raw emit to all rooms
 
 ```javascript
 strapi.$io.raw("customEvent", data);
 ```
 
-The above emit will not verify any permissions before emitting. If you wish to make a verified event the emit function can be used.
+#### Raw emit to a specific room
 
 ```javascript
-strapi.$io.emit("api::message.message.someCustomAction", data);
+strapi.$io.raw("customEvent", data, {room: "SOCKET_ID"});
 ```
 
 ## Example Client Connections
