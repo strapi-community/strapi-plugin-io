@@ -1,0 +1,39 @@
+name: Bug Report
+description: File a bug report
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: textarea
+    id: issue-experiencing
+    attributes:
+      label: What issue are you experiencing?
+      description: A detailed explanation of the issue
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: Steps To Reproduce
+      description: Steps to reproduce the behavior.
+      placeholder: |
+        1. In this environment...
+        2. With this config...
+        3. Run '...'
+        4. See error...
+    validations:
+      required: false
+  - type: input
+    id: plugin-version
+    attributes:
+      label: What version of the plugin are you using?
+    validations:
+      required: true
+  - type: input
+    id: strapi-version
+    attributes:
+      label: What strapi version are you using?
+    validations:
+      required: true
