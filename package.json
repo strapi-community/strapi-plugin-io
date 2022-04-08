@@ -22,13 +22,13 @@
 			"url": "https://github.com/hrdunn"
 		}
 	],
-	"homepage": "https://github.com/ComfortablyCoding/strapi-plugin-slugify#readme",
+	"homepage": "https://github.com/ComfortablyCoding/strapi-plugin-io#readme",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/ComfortablyCoding/strapi-plugin-slugify.git"
+		"url": "https://github.com/ComfortablyCoding/strapi-plugin-io.git"
 	},
 	"bugs": {
-		"url": "https://github.com/ComfortablyCoding/strapi-plugin-slugify/issues"
+		"url": "https://github.com/ComfortablyCoding/strapi-plugin-io/issues"
 	},
 	"dependencies": {
 		"socket.io": "^4.4.1"
