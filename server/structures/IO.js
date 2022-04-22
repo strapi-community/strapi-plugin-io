@@ -16,6 +16,32 @@ class IO {
 		return `${apiName}:${action}`;
 	}
 
+	// eslint-disable-next-line class-methods-use-this
+	_buildEventNameWithReplacements(model) {
+
+		// eslint-disable-next-line prefer-const
+		let { apiName, action } = getModelMeta(model);
+
+		switch(action){
+			case "createOrUpdate":
+				action = "update";
+				break;
+			case "publish":
+				action = "update";
+				break;
+			case "unpublish":
+				action = "delete";
+				break;
+			default:
+				break;
+		}
+
+		return {
+			action,
+			event:`${apiName}:${action}`
+		};
+	}
+
 	/**
 	 * Retrieves all strapi rooms (roles).
 	 *
@@ -39,12 +65,15 @@ class IO {
 	 * @param {object} entity The entity record data
 	 */
 	async emit(model, entity) {
-		const event = this._buildEventName(model);
+
+		const { action, event } = this._buildEventNameWithReplacements(model);
 		const rooms = await this._getStrapiRooms();
 
+		if(!entity.publishedAt && action !== "delete") return;
+
 		for (const room of rooms) {
-			if (room.permissions.find((per) => per.action === model)) {
-				this._socket.to(room.name).emit(event, entity);
+			if (room.permissions.find((per) => this._buildEventName(per.action) === event)) {
+				this._socket.to(room.name).emit(event, (action === "delete")? { id: entity.id }: entity);
 			}
 		}
 	}
