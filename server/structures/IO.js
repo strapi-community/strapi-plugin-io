@@ -2,34 +2,14 @@
 
 const { Server } = require('socket.io');
 const { handshake } = require('../middlewares/handshake');
+const { buildEventName } = require('../utils/buildEventName');
 const { getModelMeta } = require('../utils/getModelMeta');
+const { getStrapiRooms } = require('../utils/getStrapiRooms');
 
 class IO {
 	constructor(options) {
 		this._socket = new Server(strapi.server.httpServer, options);
 		this._socket.use(handshake);
-	}
-
-	// eslint-disable-next-line class-methods-use-this
-	_buildEventName(model) {
-		const { apiName, action } = getModelMeta(model);
-		return `${apiName}:${action}`;
-	}
-
-	/**
-	 * Retrieves all strapi rooms (roles).
-	 *
-	 */
-	// eslint-disable-next-line class-methods-use-this
-	_getStrapiRooms() {
-		return strapi.entityService.findMany('plugin::users-permissions.role', {
-			fields: ['name'],
-			populate: {
-				permissions: {
-					fields: ['action'],
-				},
-			},
-		});
 	}
 
 	/**
@@ -39,8 +19,8 @@ class IO {
 	 * @param {object} entity The entity record data
 	 */
 	async emit(model, entity) {
-		const event = this._buildEventName(model);
-		const rooms = await this._getStrapiRooms();
+		const event = buildEventName(model);
+		const rooms = await getStrapiRooms();
 
 		for (const room of rooms) {
 			if (room.permissions.find((per) => per.action === model)) {
