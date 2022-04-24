@@ -21,9 +21,10 @@ class IO {
 	async emit(model, entity) {
 		const event = buildEventName(model);
 		const rooms = await getStrapiRooms();
+		const { permission } = getModelMeta(model);
 
 		for (const room of rooms) {
-			if (room.permissions.find((per) => per.action === model)) {
+			if (room.permissions.find((p) => p.action === permission)) {
 				this._socket.to(room.name).emit(event, entity);
 			}
 		}
