@@ -30,7 +30,7 @@ const pluginConfigSchema = yup.object().shape({
 								'update',
 								'publish',
 								'unpublish',
-								'bulkDelete',
+								'createOrUpdate',
 							])
 					)
 					.required('An event is required');

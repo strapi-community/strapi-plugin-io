@@ -13,6 +13,10 @@ const getModelMeta = (model) => {
 		case 'unpublish':
 			permission = permission.replace('unpublish', 'delete');
 			break;
+		// single types have create and update in a single action
+		case 'createOrUpdate':
+			permission = permission.replace('createOrUpdate', 'update');
+			break;
 		default:
 			break;
 	}

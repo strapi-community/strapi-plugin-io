@@ -88,6 +88,7 @@ The above configuration will do the following:
 - `update`
 - `publish`
 - `unpublish`
+- `createOrUpdate` (single content type only)
 
 ## Emit Syntax
 
