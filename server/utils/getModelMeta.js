@@ -8,14 +8,11 @@ const getModelMeta = (model) => {
 
 	switch (action) {
 		case 'publish':
-			permission = permission.replace('publish', 'create');
+		case 'createOrUpdate':
+			permission = permission.replace(/publish|createOrUpdate/, 'update');
 			break;
 		case 'unpublish':
 			permission = permission.replace('unpublish', 'delete');
-			break;
-		// single types have create and update in a single action
-		case 'createOrUpdate':
-			permission = permission.replace('createOrUpdate', 'update');
 			break;
 		default:
 			break;
