@@ -21,11 +21,11 @@ async function handshake(socket, next) {
 
 			const advancedSettings = await getAdvancedSettings();
 
-			if (advancedSettings.email_confirmation && !user.confirmed) {
+			if (advancedSettings.email_confirmation && !authUser.confirmed) {
 				throw Error('Invalid credentials');
 			}
 
-			if (user.blocked) {
+			if (authUser.blocked) {
 				throw Error('Invalid credentials');
 			}
 
