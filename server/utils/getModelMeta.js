@@ -12,7 +12,8 @@ const getModelMeta = (model) => {
 			permission = permission.replace(/publish|createOrUpdate/, 'update');
 			break;
 		case 'unpublish':
-			permission = permission.replace('unpublish', 'delete');
+		case 'bulkDelete':
+			permission = permission.replace(/unpublish|bulkDelete/, 'delete');
 			break;
 		default:
 			break;
