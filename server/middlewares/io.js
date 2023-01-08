@@ -24,6 +24,11 @@ const io = async (strapi, ctx, next) => {
 	if (ctx.params && ctx.params.model) {
 		// partial model is in params for admin calls
 		model = `${ctx.params.model}.${route.handler.split('.').pop()}`;
+
+		// account for components with relations
+		if (!/api::|plugin::/.test(model)) {
+			model = `api::${model}`;
+		}
 	} else if (route.info.apiName) {
 		// full model is in handler for default content api calls
 		model = route.handler;
