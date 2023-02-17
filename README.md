@@ -42,8 +42,8 @@ module.exports = ({ env }) => ({
         "cors": { "origin": "http://localhost:5000", "methods": ["GET"] },
       },
       "contentTypes": {
-        "message": "*",
-        "chat":["create"]
+        "message": "*", // all based on user role permission make sure permission is given propery
+        "chat":["create"] // all based on user role permission make sure permission is given propery
       },
       "events":[
         {
