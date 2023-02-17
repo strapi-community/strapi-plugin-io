@@ -52,6 +52,19 @@ module.exports = ({ env }) => ({
             strapi.log.info(`[io] new connection with id ${socket.id}`);
           },
         },
+				// custom emit call
+				{
+          "name": "connection",
+          "handler": ({ strapi }) => {
+					// as strapi contain all the data 
+					// to call any event use
+					// strapi.$io.emit("event_name", "your message");
+					
+					// to call content type event
+					// strapi.$io.emit("api::message.message.someCustomAction", data);
+            strapi.log.info(`[io] new connection with id ${socket.id}`);
+          },
+        },
       ]
     },
   },
