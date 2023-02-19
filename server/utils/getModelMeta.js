@@ -1,7 +1,7 @@
 'use strict';
 
 const getModelMeta = (model) => {
-	const rootModel = model.split('::')[1];
+	const [type, rootModel] = model.split('::');
 	const [apiName, , action] = rootModel.split('.');
 
 	let permission = model;
@@ -20,6 +20,7 @@ const getModelMeta = (model) => {
 	}
 
 	return {
+    type,
 		rootModel,
 		apiName,
 		action,

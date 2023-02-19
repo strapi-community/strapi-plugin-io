@@ -21,11 +21,13 @@ class IO {
 	async emit(model, entity) {
 		const event = buildEventName(model);
 		const rooms = await getStrapiRooms();
-		const { permission } = getModelMeta(model);
+		const modelMeta = getModelMeta(model);
 
 		for (const room of rooms) {
-			if (room.permissions.find((p) => p.action === permission)) {
-				this._socket.to(room.name).emit(event, entity);
+			if (room.permissions.find((p) => p.action === modelMeta.permission)) {
+        const modelController = strapi.controllers[`${modelMeta.type}::${modelMeta.apiName}.${modelMeta.apiName}`];
+        const sanitizedEntity = await modelController.sanitizeOutput(entity);
+				this._socket.to(room.name).emit(event, await modelController.transformResponse(sanitizedEntity).data);
 			}
 		}
 	}
