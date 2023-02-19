@@ -25,9 +25,18 @@ class IO {
 
 		for (const room of rooms) {
 			if (room.permissions.find((p) => p.action === modelMeta.permission)) {
-				const modelController = strapi.controllers[`${modelMeta.type}::${modelMeta.apiName}.${modelMeta.apiName}`];
-				const sanitizedEntity = await modelController.sanitizeOutput(entity);
-				this._socket.to(room.name).emit(event, await modelController.transformResponse(sanitizedEntity).data);
+				if (entity.data?.id) {
+					this._socket.to(room.name).emit(event, entity);
+				}
+				else {
+					// Retrieve the model's controller
+					const modelController = strapi.controllers[`${modelMeta.type}::${modelMeta.apiName}.${modelMeta.apiName}`];
+					// Sanitize the entity
+					const sanitizedEntity = await modelController.sanitizeOutput(entity);
+					// Transform the sanitized entity
+					const transformedResponse = await modelController.transformResponse(sanitizedEntity);
+					this._socket.to(room.name).emit(event, transformedResponse);
+				}
 			}
 		}
 	}
