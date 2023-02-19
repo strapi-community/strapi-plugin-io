@@ -25,8 +25,8 @@ class IO {
 
 		for (const room of rooms) {
 			if (room.permissions.find((p) => p.action === modelMeta.permission)) {
-        const modelController = strapi.controllers[`${modelMeta.type}::${modelMeta.apiName}.${modelMeta.apiName}`];
-        const sanitizedEntity = await modelController.sanitizeOutput(entity);
+				const modelController = strapi.controllers[`${modelMeta.type}::${modelMeta.apiName}.${modelMeta.apiName}`];
+				const sanitizedEntity = await modelController.sanitizeOutput(entity);
 				this._socket.to(room.name).emit(event, await modelController.transformResponse(sanitizedEntity).data);
 			}
 		}
@@ -50,7 +50,7 @@ class IO {
 	}
 
 	/**
-	 *  Returns the server socket
+	 *	Returns the server socket
 	 */
 	get socket() {
 		return this._socket;
