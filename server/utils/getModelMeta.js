@@ -20,7 +20,7 @@ const getModelMeta = (model) => {
 	}
 
 	return {
-    type,
+		type,
 		rootModel,
 		apiName,
 		action,
