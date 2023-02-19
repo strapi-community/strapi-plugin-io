@@ -50,7 +50,7 @@ class IO {
 	}
 
 	/**
-	 *	Returns the server socket
+	 * Returns the server socket
 	 */
 	get socket() {
 		return this._socket;
