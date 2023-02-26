@@ -16,26 +16,35 @@ class IO {
 	 * Emits an event to all roles that have permission to access the specified model.
 	 *
 	 * @param {string} model The model uid
-	 * @param {object} entity The entity record data
+	 * @param {object} data The data
 	 */
-	async emit(model, entity) {
+	async emit(model, data) {
 		const event = buildEventName(model);
 		const rooms = await getStrapiRooms();
 		const modelMeta = getModelMeta(model);
 
 		for (const room of rooms) {
 			if (room.permissions.find((p) => p.action === modelMeta.permission)) {
-				if (entity.data?.id) {
-					this._socket.to(room.name).emit(event, entity);
+				if (data.data?.id) {
+					this._socket.to(room.name).emit(event, data);
 				}
 				else {
 					// Retrieve the model's controller
 					const modelController = strapi.controllers[`${modelMeta.type}::${modelMeta.apiName}.${modelMeta.apiName}`];
-					// Sanitize the entity
-					const sanitizedEntity = await modelController.sanitizeOutput(entity);
-					// Transform the sanitized entity
-					const transformedResponse = await modelController.transformResponse(sanitizedEntity);
-					this._socket.to(room.name).emit(event, transformedResponse);
+					if (data.results?.length >= 0) {
+						// results is coming from strapi.db.query
+						const sanitizedEntities = modelController.sanitizeOutput(data.results);
+						// Transform the sanitized entities
+						const transformedResponse = await modelController.transformResponse(sanitizedEntities);
+						this._socket.to(room.name).emit(event, transformedResponse);
+					}
+					else {
+						// Sanitize the entity
+						const sanitizedEntity = await modelController.sanitizeOutput(data);
+						// Transform the sanitized entity
+						const transformedResponse = await modelController.transformResponse(sanitizedEntity);
+						this._socket.to(room.name).emit(event, transformedResponse);
+					}
 				}
 			}
 		}
