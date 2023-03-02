@@ -1,7 +1,9 @@
 'use strict';
 
-const myService = require('./my-service');
+const sanitize = require('./sanitize');
+const transform = require('./transform');
 
 module.exports = {
-	myService,
+	sanitize,
+	transform,
 };
