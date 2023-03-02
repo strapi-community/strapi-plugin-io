@@ -1,28 +1,18 @@
 {
 	"$schema": "https://json.schemastore.org/package",
 	"name": "strapi-plugin-io",
-	"version": "1.1.5",
+	"version": "1.1.4",
 	"description": "A plugin for Strapi CMS that provides the ability for Socket IO integration",
-	"keywords": [
-		"strapi",
-		"strapi-plugin",
-		"plugin",
-		"strapi plugin",
-		"socket io",
-		"io"
-	],
-	"license": "MIT",
+	"scripts": {
+		"lint": "eslint . --fix",
+		"format": "prettier --write \"./**/*.{js,json,yml,md}\"",
+		"docs:dev": "vitepress dev docs",
+		"docs:build": "vitepress build docs",
+		"docs:preview": "vitepress preview docs"
+	},
 	"author": {
 		"name": "@ComfortablyCoding",
 		"url": "https://github.com/ComfortablyCoding"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/ComfortablyCoding/strapi-plugin-io.git"
-	},
-	"scripts": {
-		"lint": "eslint . --fix",
-		"format": "prettier --write **/*.{ts,js,json,yml}"
 	},
 	"maintainers": [
 		{
@@ -36,22 +26,28 @@
 		}
 	],
 	"homepage": "https://github.com/ComfortablyCoding/strapi-plugin-io#readme",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/ComfortablyCoding/strapi-plugin-io.git"
+	},
 	"bugs": {
 		"url": "https://github.com/ComfortablyCoding/strapi-plugin-io/issues"
 	},
-	"peerDependencies": {
-		"@strapi/strapi": "^4.1.5",
-		"lodash": "^4.17.21",
-		"yup": "^0.32.11"
-	},
 	"dependencies": {
-		"socket.io": "^4.7.2"
+		"socket.io": "^4.7.2",
+		"zod": "^3.22.4"
 	},
 	"devDependencies": {
-		"@strapi-community/eslint-config": "^0.4.3",
-		"eslint": "^8.52.0",
+		"@strapi/eslint-config": "^0.2.0",
+		"eslint": "^8.54.0",
 		"eslint-config-prettier": "^9.0.0",
-		"prettier": "^3.0.3"
+		"eslint-plugin-node": "^11.1.0",
+		"prettier": "^3.1.0",
+		"vitepress": "^1.0.0-rc.29"
+	},
+	"peerDependencies": {
+		"@strapi/strapi": "^4.14.6",
+		"@strapi/utils": "^4.14.6"
 	},
 	"strapi": {
 		"name": "io",
@@ -60,7 +56,17 @@
 		"kind": "plugin"
 	},
 	"engines": {
-		"node": ">=18.0.0 <=20.x.x",
+		"node": ">=14.19.1 <=18.x.x",
 		"npm": ">=6.0.0"
-	}
+	},
+	"keywords": [
+		"strapi",
+		"strapi-plugin",
+		"plugin",
+		"strapi plugin",
+		"socket",
+		"socket io",
+		"io"
+	],
+	"license": "MIT"
 }
