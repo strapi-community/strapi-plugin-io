@@ -2,7 +2,6 @@
 
 // adapted from https://github.com/strapi/strapi/tree/main/packages/core/utils/lib/sanitize
 
-const _ = require('lodash');
 const { traverseEntity, pipeAsync, sanitize } = require('@strapi/utils');
 
 // constants
@@ -20,7 +19,7 @@ const UPDATED_BY_ATTRIBUTE = 'updatedBy';
  * @param {Function} param.scopeFn
  */
 async function output({ schema, data, ability, scopeFn }) {
-	if (_.isArray(data)) {
+	if (Array.isArray(data)) {
 		return Promise.all(data.map((entry) => output(entry, schema, { ability })));
 	}
 
