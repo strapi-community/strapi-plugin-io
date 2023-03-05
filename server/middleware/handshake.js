@@ -1,93 +1,45 @@
 'use strict';
 
-const { UnauthorizedError } = require('@strapi/utils').errors;
 const { getService } = require('../utils/getService');
 
 /**
- * /**
- * Auto assign sockets to appropriate rooms based on auth.
+ * Auto assign sockets to appropriate rooms based on tokens associated name.
  * Defaults to default role if no token provided.
  *
- * @param {*} socket
- * @param {*} next
+ * @param {require('socket.io').Socket} socket The socket attempting to connect
+ * @param {Function} next Function to call the next middleware in the stack
  */
 async function handshake(socket, next) {
-	const jwtService = getService({ name: 'jwt', plugin: 'users-permissions' });
-	const userService = getService({ name: 'user', plugin: 'users-permissions' });
+	const authService = getService({ name: 'auth' });
 	const auth = socket.handshake.auth || {};
+	let strategy = auth.strategy || 'jwt';
+	const token = auth.token || '';
 
-	if (auth.token) {
-		// verify api token (https://github.com/strapi/strapi/blob/main/packages/core/admin/server/strategies/api-token.js)
-		try {
-			const tokenService = strapi.service('admin::api-token');
-			const apiToken = await tokenService.getBy({
-				accessKey: tokenService.hash(auth.token),
-			});
+	// remove strategy if no token provided
+	if (!token.length) {
+		strategy = '';
+	}
 
-			// token not found
-			if (!apiToken) {
-				throw new UnauthorizedError('Invalid credentials');
-			}
-
-			const currentDate = new Date();
-
-			// ensure token has not expired if applicable
-			if (apiToken.expiresAt) {
-				const expirationDate = new Date(apiToken.expiresAt);
-				// token has expired
-				if (expirationDate < currentDate) {
-					throw new UnauthorizedError('Token expired');
-				}
-			}
-
-			// update lastUsedAt
-			await strapi.entityService.update('admin::api-token', apiToken.id, {
-				data: {
-					lastUsedAt: currentDate,
-				},
-			});
-			socket.join(apiToken.name);
-		} catch (error) {
-			next(error);
-		}
-	} else if (auth.jwt) {
-		// verify jwt (https://github.com/strapi/strapi/blob/main/packages/plugins/users-permissions/server/strategies/users-permissions.js)
-		try {
-			const jwtUser = await jwtService.verify(auth.jwt);
-			const user = await userService.fetchAuthenticatedUser(jwtUser.id);
-
-			// No user associated to the token
-			if (!user) {
-				throw new UnauthorizedError('Invalid credentials');
-			}
-
+	try {
+		// TODO: refactor
+		let room;
+		if (strategy === 'jwt') {
+			room = await authService.jwt(auth);
+		} else if (strategy === 'apiToken') {
+			room = await authService.apiToken(auth);
+		} else {
+			// add to default role if no supported auth provided
 			const advanced = await strapi
 				.store({ type: 'plugin', name: 'users-permissions', key: 'advanced' })
 				.get();
-
-			// User not confirmed
-			if (advanced.email_confirmation && !user.confirmed) {
-				throw new UnauthorizedError('Invalid credentials');
-			}
-
-			// User blocked
-			if (user.blocked) {
-				throw new UnauthorizedError('Invalid credentials');
-			}
-
-			socket.join(user.role.name);
-		} catch (error) {
-			next(error);
+			room = advanced.default_role;
 		}
-	} else {
-		// add to public role if no supported auth provided
-		const advanced = await strapi
-			.store({ type: 'plugin', name: 'users-permissions', key: 'advanced' })
-			.get();
 
-		socket.join(advanced.default_role);
+		socket.join(room);
+		next();
+	} catch (error) {
+		next(error);
 	}
-	next();
 }
 
 module.exports = {
