@@ -2,8 +2,15 @@
 
 const { pluginId } = require('./pluginId');
 
-const getService = ({ name, plugin = pluginId, type = 'plugin' }) =>
-	strapi.service(`${type}::${plugin}.${name}`);
+function getService({ name, plugin = pluginId, type = 'plugin' }) {
+	let serviceUID = `${type}::${plugin}`;
+
+	if (name && name.length) {
+		serviceUID += `.${name}`;
+	}
+
+	return strapi.service(serviceUID);
+}
 
 module.exports = {
 	getService,
