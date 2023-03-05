@@ -5,7 +5,7 @@ const { handshake } = require('../middleware');
 const { getService } = require('../utils/getService');
 const { pluginId } = require('../utils/pluginId');
 
-const TOKEN_TYPES = {
+const API_TOKEN_TYPES = {
 	READ_ONLY: 'read-only',
 	FULL_ACCESS: 'full-access',
 	CUSTOM: 'custom',
@@ -63,12 +63,15 @@ class SocketIO {
 				ability: tokenAbility,
 				scopeFn({ scopes, ability }) {
 					// Full access and read only have total access to data
-					if (ability.type === TOKEN_TYPES.FULL_ACCESS || ability.type === TOKEN_TYPES.READ_ONLY) {
+					if (
+						ability.type === API_TOKEN_TYPES.FULL_ACCESS ||
+						ability.type === API_TOKEN_TYPES.READ_ONLY
+					) {
 						return true;
 					}
 
 					// Read only
-					if (ability.type === TOKEN_TYPES.CUSTOM) {
+					if (ability.type === API_TOKEN_TYPES.CUSTOM) {
 						return scopes.some((s) => ability.scopes.has(s));
 					}
 				},
