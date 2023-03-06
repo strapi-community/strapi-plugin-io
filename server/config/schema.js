@@ -13,7 +13,7 @@ const pluginConfigSchema = yup.object().shape({
 			test: (value) => typeof value === 'function',
 		}),
 	}),
-	io: yup.object().shape({ serverOptions: yup.object() }),
+	socket: yup.object().shape({ serverOptions: yup.object() }),
 });
 
 module.exports = {

@@ -13,7 +13,7 @@ async function bootstrapIO({ strapi }) {
 	const settings = strapi.config.get(`plugin.${pluginId}`);
 
 	// initialize io
-	strapi.$io = new SocketIO(settings.IOServerOptions);
+	strapi.$io = new SocketIO(settings.socket.serverOptions);
 
 	// add any io server events
 	if (settings.events && Object.keys(settings.events).length) {
