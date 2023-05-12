@@ -20,9 +20,14 @@ class SocketIO {
 	}
 
 	// eslint-disable-next-line no-unused-vars
-	async emit({ model, data }) {
+	async emit({ event, schema, data: rawData }) {
 		const sanitizeService = getService({ name: 'sanitize' });
 		const transformService = getService({ name: 'transform' });
+
+		// account for unsaved single content type being null
+		if (!rawData) {
+			return;
+		}
 
 		// fetch all role types
 		const roles = await strapi.entityService.findMany('plugin::users-permissions.role', {
@@ -34,21 +39,22 @@ class SocketIO {
 			populate: { permissions: true },
 		});
 
-		const contentType = strapi.contentType(model.uid);
+		const contentType = strapi.contentType(schema.uid);
+		const eventUID = `${event}:${schema.singularName}`;
 
 		// emit data to roles
 		for (const role of roles) {
 			const roleAbility = new Set([...role.permissions.map((p) => p.action)]);
 			const sanitizedEntity = await sanitizeService.output({
 				schema: contentType,
-				data,
+				data: rawData,
 				ability: roleAbility,
 				scopeFn({ scopes, ability }) {
 					scopes.some((s) => ability.has(s));
 				},
 			});
-			const data = transformService.response(sanitizedEntity, contentType);
-			// this._socket.to(role.name).emit(event, entity);
+			const data = transformService.response({ resource: sanitizedEntity, contentType });
+			this._socket.to(role.name).emit(eventUID, { data });
 		}
 
 		// emit data to tokens
@@ -59,7 +65,7 @@ class SocketIO {
 			};
 			const sanitizedEntity = await sanitizeService.output({
 				schema: contentType,
-				data,
+				data: rawData,
 				ability: tokenAbility,
 				scopeFn({ scopes, ability }) {
 					// Full access and read only have total access to data
@@ -70,14 +76,14 @@ class SocketIO {
 						return true;
 					}
 
-					// Read only
+					// custom token can have any permissions and need to be check
 					if (ability.type === API_TOKEN_TYPES.CUSTOM) {
 						return scopes.some((s) => ability.scopes.has(s));
 					}
 				},
 			});
-			const data = transformService.response(sanitizedEntity, contentType);
-			// this._socket.to(token.name).emit(event, entity);
+			const data = transformService.response({ resource: sanitizedEntity, contentType });
+			this._socket.to(token.name).emit(eventUID, { data });
 		}
 	}
 
@@ -91,7 +97,7 @@ class SocketIO {
 			});
 		}
 
-		emitter.emit(event, data);
+		emitter.emit(event, { data });
 	}
 
 	get server() {
