@@ -45,16 +45,18 @@ class SocketIO {
 		// emit data to roles
 		for (const role of roles) {
 			const roleAbility = new Set([...role.permissions.map((p) => p.action)]);
-			const sanitizedEntity = await sanitizeService.output({
-				schema: contentType,
-				data: rawData,
-				ability: roleAbility,
-				scopeFn({ scopes, ability }) {
-					return scopes.some((s) => ability.has(s));
-				},
-			});
-			const data = transformService.response({ resource: sanitizedEntity, contentType });
-			this._socket.to(role.name).emit(eventUID, { data });
+			if (roleAbility.has(modelAbility)) {
+				const sanitizedEntity = await sanitizeService.output({
+					schema: contentType,
+					data: rawData,
+					ability: roleAbility,
+					scopeFn({ scopes, ability }) {
+						return scopes.some((s) => ability.has(s));
+					},
+				});
+				const data = transformService.response({ resource: sanitizedEntity, contentType });
+				this._socket.to(role.name).emit(eventUID, { data });
+			}
 		}
 
 		// emit data to tokens
@@ -63,27 +65,32 @@ class SocketIO {
 				type: token.type,
 				scopes: new Set([...token.permissions.map((t) => t.action)]),
 			};
-			const sanitizedEntity = await sanitizeService.output({
-				schema: contentType,
-				data: rawData,
-				ability: tokenAbility,
-				scopeFn({ scopes, ability }) {
-					// Full access and read only have total access to data
-					if (
-						ability.type === API_TOKEN_TYPES.FULL_ACCESS ||
-						ability.type === API_TOKEN_TYPES.READ_ONLY
-					) {
-						return true;
-					}
+			if (
+				token.type !== API_TOKEN_TYPES.CUSTOM ||
+				(token.type === API_TOKEN_TYPES.CUSTOM && tokenAbility.scopes.has(modelAbility))
+			) {
+				const sanitizedEntity = await sanitizeService.output({
+					schema: contentType,
+					data: rawData,
+					ability: tokenAbility,
+					scopeFn({ scopes, ability }) {
+						// Full access and read only have total access to data
+						if (
+							ability.type === API_TOKEN_TYPES.FULL_ACCESS ||
+							ability.type === API_TOKEN_TYPES.READ_ONLY
+						) {
+							return true;
+						}
 
-					// custom token can have any permissions and need to be check
-					if (ability.type === API_TOKEN_TYPES.CUSTOM) {
-						return scopes.some((s) => ability.scopes.has(s));
-					}
-				},
-			});
-			const data = transformService.response({ resource: sanitizedEntity, contentType });
-			this._socket.to(token.name).emit(eventUID, { data });
+						// custom token can have any permissions and need to be check
+						if (ability.type === API_TOKEN_TYPES.CUSTOM) {
+							return scopes.some((s) => ability.scopes.has(s));
+						}
+					},
+				});
+				const data = transformService.response({ resource: sanitizedEntity, contentType });
+				this._socket.to(token.name).emit(eventUID, { data });
+			}
 		}
 	}
 
