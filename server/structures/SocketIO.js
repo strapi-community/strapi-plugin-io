@@ -40,7 +40,14 @@ class SocketIO {
 		});
 
 		const contentType = strapi.contentType(schema.uid);
-		const eventUID = `${event}:${schema.singularName}`;
+		let action = event;
+		// findOne should be find for single types
+		if (contentType.kind === 'singleType' && action === 'findOne') {
+			action = 'find';
+		}
+
+		const eventUID = `${action}:${schema.singularName}`;
+		const modelAbility = `${schema.uid}.${action}`;
 
 		// emit data to roles
 		for (const role of roles) {
