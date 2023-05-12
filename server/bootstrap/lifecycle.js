@@ -27,6 +27,8 @@ function getEventType(action) {
 			event = 'create';
 			break;
 		case 'afterFindOne':
+			event = 'findOne';
+			break;
 		case 'afterFindMany':
 			event = 'find';
 			break;
