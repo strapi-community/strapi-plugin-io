@@ -16,7 +16,33 @@ function isAllowedAction(action) {
 }
 
 function isAPIModel(model) {
-	return model && model.uid && /'^api::'/i.test(model.uid);
+	return model && model.uid && /^api::\w+/i.test(model.uid);
+}
+
+function getEventType(action) {
+	let event = '';
+	switch (action) {
+		case 'afterCreate':
+		case 'afterCreateMany':
+			event = 'create';
+			break;
+		case 'afterFindOne':
+		case 'afterFindMany':
+			event = 'find';
+			break;
+		case 'afterUpdate':
+		case 'afterUpdateMany':
+			event = 'update';
+			break;
+		case 'afterDelete':
+		case 'afterDeleteMany':
+			event = 'delete';
+			break;
+		default:
+			event = '';
+			break;
+	}
+	return event;
 }
 
 /**
@@ -29,7 +55,11 @@ async function bootstrapLifecycles({ strapi }) {
 	// setup lifecycles
 	strapi.db.lifecycles.subscribe((event) => {
 		if (isAllowedAction(event.action) && isAPIModel(event.model)) {
-			strapi.$io.emit({ ...event });
+			strapi.$io.emit({
+				event: getEventType(event.action),
+				schema: event.model,
+				data: event.result,
+			});
 		}
 	});
 }
