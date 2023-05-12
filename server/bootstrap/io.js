@@ -13,7 +13,10 @@ async function bootstrapIO({ strapi }) {
 	const settings = strapi.config.get(`plugin.${pluginId}`);
 
 	// initialize io
-	strapi.$io = new SocketIO(settings.socket.serverOptions);
+	const io = new SocketIO(settings.socket.serverOptions);
+
+	// make io avaiable anywhere strapi global object is
+	strapi.$io = io;
 
 	// add any io server events
 	if (settings.events && Object.keys(settings.events).length) {
@@ -21,10 +24,10 @@ async function bootstrapIO({ strapi }) {
 			for (const [eventName, event] of Object.entries(settings.events)) {
 				// "connection" event should be executed immediately
 				if (eventName === 'connection') {
-					event.handler({ strapi, socket });
+					event.handler({ strapi, socket, io });
 				} else {
 					// register all other events to be triggered at a later time
-					socket.on(eventName, (...data) => event.handler({ strapi, socket }, ...data));
+					socket.on(eventName, (...data) => event.handler({ strapi, socket, io }, ...data));
 				}
 			}
 		});
