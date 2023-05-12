@@ -50,7 +50,7 @@ class SocketIO {
 				data: rawData,
 				ability: roleAbility,
 				scopeFn({ scopes, ability }) {
-					scopes.some((s) => ability.has(s));
+					return scopes.some((s) => ability.has(s));
 				},
 			});
 			const data = transformService.response({ resource: sanitizedEntity, contentType });
