@@ -20,7 +20,7 @@ const UPDATED_BY_ATTRIBUTE = 'updatedBy';
  */
 async function output({ schema, data, ability, scopeFn }) {
 	if (Array.isArray(data)) {
-		return Promise.all(data.map((entry) => output(entry, schema, { ability })));
+		return Promise.all(data.map((entry) => output({ data: entry, schema, ability, scopeFn })));
 	}
 
 	const transforms = [sanitize.sanitizers.defaultSanitizeOutput(schema)];
