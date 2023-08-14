@@ -29,9 +29,7 @@ async function handshake(socket, next) {
 			room = await authService.apiToken(auth);
 		} else {
 			// add to default role if no supported auth provided
-			const advanced = await strapi
-				.store({ type: 'plugin', name: 'users-permissions', key: 'advanced' })
-				.get();
+			const advanced = await strapi.store({ type: 'plugin', name: 'users-permissions', key: 'advanced' }).get();
 			room = advanced.default_role;
 		}
 

@@ -17,9 +17,7 @@ async function jwt(auth) {
 		throw new UnauthorizedError('Invalid credentials');
 	}
 
-	const advanced = await strapi
-		.store({ type: 'plugin', name: 'users-permissions', key: 'advanced' })
-		.get();
+	const advanced = await strapi.store({ type: 'plugin', name: 'users-permissions', key: 'advanced' }).get();
 
 	// User not confirmed
 	if (advanced.email_confirmation && !user.confirmed) {
