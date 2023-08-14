@@ -28,9 +28,7 @@ async function output({ schema, data, ability, scopeFn }) {
 	transforms.push(traverseEntity(removeRestrictedRelations({ ability, scopeFn }), { schema }));
 
 	// Apply sanitizers from registry if exists
-	strapi.sanitizers
-		.get('content-api.output')
-		.forEach((sanitizer) => transforms.push(sanitizer(schema)));
+	strapi.sanitizers.get('content-api.output').forEach((sanitizer) => transforms.push(sanitizer(schema)));
 
 	return pipeAsync(...transforms)(data);
 }

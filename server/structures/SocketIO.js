@@ -77,10 +77,7 @@ class SocketIO {
 					ability: tokenAbility,
 					scopeFn({ scopes, ability }) {
 						// Full access and read only have total access to data
-						if (
-							ability.type === API_TOKEN_TYPES.FULL_ACCESS ||
-							ability.type === API_TOKEN_TYPES.READ_ONLY
-						) {
+						if (ability.type === API_TOKEN_TYPES.FULL_ACCESS || ability.type === API_TOKEN_TYPES.READ_ONLY) {
 							return true;
 						}
 

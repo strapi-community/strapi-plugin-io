@@ -34,8 +34,6 @@ export default defineConfig({
 			},
 		],
 
-		socialLinks: [
-			{ icon: 'github', link: 'https://github.com/ComfortablyCoding/strapi-plugin-io' },
-		],
+		socialLinks: [{ icon: 'github', link: 'https://github.com/ComfortablyCoding/strapi-plugin-io' }],
 	},
 });
