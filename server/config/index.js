@@ -7,7 +7,7 @@ module.exports = {
 		return {
 			events: {},
 			hooks: { init() {} },
-			socket: { serverOptions: { cors: { origin: 'http://localhost:8080', methods: ['GET'] } } },
+			socket: { serverOptions: { cors: { origin: 'http://localhost:1337', methods: ['GET'] } } },
 		};
 	},
 	validator(config) {
