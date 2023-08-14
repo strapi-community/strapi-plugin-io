@@ -1,6 +1,6 @@
 'use strict';
 
-// adapted from https://github.com/strapi/strapi/tree/main/packages/core/utils/lib/sanitize
+// adapted from https://github.com/strapi/strapi/tree/main/packages/core/utils/src/sanitize
 
 const { traverseEntity, pipeAsync, sanitize } = require('@strapi/utils');
 
@@ -23,7 +23,7 @@ async function output({ schema, data, ability, scopeFn }) {
 		return Promise.all(data.map((entry) => output({ data: entry, schema, ability, scopeFn })));
 	}
 
-	const transforms = [sanitize.sanitizers.defaultSanitizeOutput(schema)];
+	const transforms = [(entry) => sanitize.sanitizers.defaultSanitizeOutput(schema, entry)];
 
 	transforms.push(traverseEntity(removeRestrictedRelations({ ability, scopeFn }), { schema }));
 
