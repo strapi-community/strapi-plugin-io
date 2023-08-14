@@ -40,13 +40,8 @@ class SocketIO {
 		});
 
 		const contentType = strapi.contentType(schema.uid);
-		let action = event;
-		// findOne should be find for single types
-		if (contentType.kind === 'singleType' && action === 'findOne') {
-			action = 'find';
-		}
-
-		const eventUID = `${action}:${schema.singularName}`;
+		const action = event;
+		const eventName = `${schema.singularName}:${action}`;
 		const modelAbility = `${schema.uid}.${action}`;
 
 		// emit data to roles
@@ -62,7 +57,7 @@ class SocketIO {
 					},
 				});
 				const data = transformService.response({ resource: sanitizedEntity, contentType });
-				this._socket.to(role.name).emit(eventUID, { data });
+				this._socket.to(role.name).emit(eventName, { data });
 			}
 		}
 
@@ -96,7 +91,7 @@ class SocketIO {
 					},
 				});
 				const data = transformService.response({ resource: sanitizedEntity, contentType });
-				this._socket.to(token.name).emit(eventUID, { data });
+				this._socket.to(token.name).emit(eventName, { data });
 			}
 		}
 	}
