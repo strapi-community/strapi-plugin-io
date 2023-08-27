@@ -27,13 +27,20 @@ async function handshake(socket, next) {
 			room = await authService.jwt(auth);
 		} else if (strategy === 'apiToken') {
 			room = await authService.apiToken(auth);
-		} else {
-			// add to default role if no supported auth provided
+		} else if (strapi.plugin('users-permissions')) {
+			// add to default role if no supported auth provided and users-permission is present
 			const advanced = await strapi.store({ type: 'plugin', name: 'users-permissions', key: 'advanced' }).get();
-			room = advanced.default_role;
+			const defaultRole = await strapi
+				.query('plugin::users-permissions.role')
+				.findOne({ where: { type: advanced.default_role }, select: ['name'] });
+
+			room = defaultRole.name;
 		}
 
-		socket.join(room);
+		if (room) {
+			socket.join(room);
+		}
+
 		next();
 	} catch (error) {
 		next(error);
