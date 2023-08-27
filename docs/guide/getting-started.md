@@ -22,15 +22,15 @@ yarn add strapi-plugin-io
 
 ```js
 module.exports = ({ env }) => ({
-  // ...
-  io: {
-    enabled: true,
-    config: {
-      // This will listen for all supported events on the artice content type
-      contentTypes: ['api::article.article'],
-    },
-  },
-  // ...
+	// ...
+	io: {
+		enabled: true,
+		config: {
+			// This will listen for all supported events on the artice content type
+			contentTypes: ['api::article.article'],
+		},
+	},
+	// ...
 });
 ```
 
@@ -41,7 +41,7 @@ The plugins.js file does not exist by default, if this is a new project it will 
 3. Connect a client socket to listen for events.
 
 ::: info Note
-Authentication is handled automatically by the plugin. Clients are added to rooms based on the role/token name.
+Authentication is handled automatically by the plugin. Clients are added to rooms based on the role/token used during the socket handshake. The public room is whatever role is set as default in the [advanced settings of users-permissions plugin](https://docs.strapi.io/user-docs/settings/configuring-users-permissions-plugin-settings#configuring-advanced-settings).
 :::
 
 :::: code-group
@@ -60,18 +60,18 @@ const socket = io(SERVER_URL);
 
 //  wait until socket connects before adding event listeners
 socket.on('connect', () => {
-  socket.on('article:create', (data) => {
-    console.log('article created!');
-    console.log(data);
-  });
-  socket.on('article:update', (data) => {
-    console.log('article updated!');
-    console.log(data);
-  });
-  socket.on('article:delete', (data) => {
-    console.log('article deleted!');
-    console.log(data);
-  });
+	socket.on('article:create', (data) => {
+		console.log('article created!');
+		console.log(data);
+	});
+	socket.on('article:update', (data) => {
+		console.log('article updated!');
+		console.log(data);
+	});
+	socket.on('article:delete', (data) => {
+		console.log('article deleted!');
+		console.log(data);
+	});
 });
 ```
 

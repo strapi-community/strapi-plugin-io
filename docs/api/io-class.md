@@ -19,7 +19,7 @@ The emit function has the following signature
 ```js
 /**
  *  - ctx -> emit context.
- *    - event -> the emit action (e.g. find, findOne etc), the permission for the role is based on this value.
+ *    - event -> the emit action (e.g. create, update etc), the permission for the role is based on this value.
  *    - schema -> the content type model for the data provided.
  *    - data -> data to be emitted.
  */
@@ -30,7 +30,7 @@ emit({ event, schema, data });
 
 ```js
 // built in action
-strapi.$io.emit({ event: 'find', schema, data });
+strapi.$io.emit({ event: 'update', schema, data });
 
 // custom action
 strapi.$io.emit({ event: 'customAction', schema, data });
@@ -62,10 +62,36 @@ raw({ event, rooms, data });
 
 ```js
 // emit to all rooms
-strapi.$io.raw({ event: 'find:custom', data: { message: 'hello' } });
+strapi.$io.raw({ event: 'update:custom', data: { message: 'hello' } });
 
 // emit to specific room
 strapi.$io.raw({ event: 'lorem-ipsum', rooms: ['r1', 'r2'], data: { message: 'hello' } });
 ```
 
 :::
+
+### Event Signature
+
+The events emitted from the `raw` and `emit` functions have the following event signature.
+
+```js
+socket.on(eventName, { data });
+```
+
+:::: code-group
+
+```js [Server]
+// ..
+strapi.$io.emit({ event: 'create', schema, data });
+//..
+```
+
+```js [Client]
+// ..
+socket.on('article:create', ({ data }) => {
+	console.log({ data });
+});
+//..
+```
+
+::::
