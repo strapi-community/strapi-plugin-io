@@ -18,7 +18,7 @@ const contentTypeConfig = yup.lazy((value) => {
 });
 
 const pluginConfigSchema = yup.object().shape({
-	events: yup.object().optional(),
+	events: yup.array().optional(),
 	hooks: yup
 		.object()
 		.shape({
