@@ -68,6 +68,8 @@ module.exports = ({ env }) => ({
 
 ##### Client Socket
 
+Once an event is setup it can then be triggered by socket on the client side.
+
 ```js
 const id = 123;
 const name = 'lorem ipsum';
