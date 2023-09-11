@@ -19,11 +19,11 @@ The handler property is the callback triggered when the event is emitted. It has
 /**
  *  - ctx -> handler context.
  *    - strapi -> global strapi object.
- *    - socket -> access to the specific socket that triggered the event.
  *    - io -> access to the io class.
+ *    - socket -> access to the client side socket that triggered the event.
  *  - ...args -> arguments that were sent with the event.
  */
-handler({ strapi, io, socket }, ...args);
+handler({ strapi, io }, socket, ...args);
 ```
 
 ::: details Example
@@ -36,13 +36,13 @@ module.exports = ({ env }) => ({
 		config: {
 			events: {
 				connection: {
-					handler({ strapi, socket }) {
+					handler({ strapi, io }, socket) {
 						// will log whenever a socket connects
 						strapi.log.info(`[io] new connection with id ${socket.id}`);
 					},
 				},
 				'custom-event-name': {
-					handler({ strapi, socket }, x, y) {
+					handler({ strapi, io }, socket, x, y) {
 						// will log whenever 'custom-event-name' is called by a socket
 						strapi.log.info(`[io] hello from custom event location ${x} ${y}`);
 					},
