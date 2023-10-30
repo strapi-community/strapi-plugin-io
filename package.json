@@ -31,13 +31,13 @@
 		"url": "https://github.com/ComfortablyCoding/strapi-plugin-io/issues"
 	},
 	"dependencies": {
-		"socket.io": "^4.4.1"
+		"socket.io": "^4.7.2"
 	},
 	"devDependencies": {
-		"@strapi-community/eslint-config": "^0.2.0",
-		"eslint": "^8.11.0",
-		"eslint-config-prettier": "^8.5.0",
-		"prettier": "^2.6.0"
+		"@strapi-community/eslint-config": "^0.4.3",
+		"eslint": "^8.52.0",
+		"eslint-config-prettier": "^9.0.0",
+		"prettier": "^3.0.3"
 	},
 	"peerDependencies": {
 		"@strapi/strapi": "^4.1.5",
