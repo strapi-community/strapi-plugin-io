@@ -10,7 +10,7 @@ const { getService } = require('../utils/getService');
  * @param {Function} next Function to call the next middleware in the stack
  */
 async function handshake(socket, next) {
-	const authService = getService({ name: 'auth' });
+	const strategyService = getService({ name: 'strategy' });
 	const auth = socket.handshake.auth || {};
 	let strategy = auth.strategy || 'jwt';
 	const token = auth.token || '';
@@ -23,10 +23,10 @@ async function handshake(socket, next) {
 	try {
 		// TODO: refactor
 		let room;
-		if (strategy === 'jwt') {
-			room = await authService.jwt(auth);
-		} else if (strategy === 'apiToken') {
-			room = await authService.apiToken(auth);
+		if (strategy && strategy.length) {
+			const strategyType = strategy === 'jwt' ? 'io-role' : 'io-token';
+			const ctx = await strategyService[strategyType].authenticate(auth);
+			room = strategyService[strategyType].getRoomName(ctx);
 		} else if (strapi.plugin('users-permissions')) {
 			// add to default role if no supported auth provided and users-permission is present
 			const advanced = await strapi.store({ type: 'plugin', name: 'users-permissions', key: 'advanced' }).get();
