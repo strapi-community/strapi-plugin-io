@@ -28,7 +28,7 @@ yarn add strapi-plugin-io
 
 ## Documentation
 
-Documentation can be found at https://ComfortablyCoding.github.io/strapi-plugin-io
+Documentation can be found at https://strapi-plugin-io.netlify.app/
 
 ## Bugs
 
