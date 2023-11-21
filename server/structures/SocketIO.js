@@ -36,27 +36,30 @@ class SocketIO {
 					const permissions = room.permissions.map(({ action }) => ({ action }));
 					const ability = await strapi.contentAPI.permissions.engine.generateAbility(permissions);
 
-					// sanitize
-					const sanitizedData = await sanitizeService.output({
-						data: rawData,
-						schema,
-						options: {
-							auth: {
-								name: strategy.name,
-								ability,
-								strategy: {
-									verify: strategy.verify,
+					if (ability.can(schema.uid + '.' + event)) {
+						// sanitize
+						const sanitizedData = await sanitizeService.output({
+							data: rawData,
+							schema,
+							options: {
+								auth: {
+									name: strategy.name,
+									ability,
+									strategy: {
+										verify: strategy.verify,
+									},
+									credentials: strategy.credentials?.(room),
 								},
-								credentials: strategy.credentials?.(room),
 							},
-						},
-					});
+						});
 
-					const roomName = strategy.getRoomName(room);
+						const roomName = strategy.getRoomName(room);
 
-					// transform
-					const data = transformService.response({ data: sanitizedData, schema });
-					this._socket.to(roomName).emit(eventName, { data });
+						// transform
+						const data = transformService.response({ data: sanitizedData, schema });
+						// emit
+						this._socket.to(roomName.replace(' ', '-')).emit(eventName, { ...data, roomName });
+					}
 				}
 			}
 		}
