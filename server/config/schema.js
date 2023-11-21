@@ -1,43 +1,34 @@
 'use strict';
 
-const yup = require('yup');
+const { z } = require('zod');
 
-const contentTypeConfig = yup.lazy((value) => {
-	if (typeof value === 'string') {
-		return yup.string();
-	}
-
-	if (typeof value === 'object') {
-		return yup.object().shape({
-			uid: yup.string(),
-			actions: yup.array().oneOf(['create', 'update', 'delete']).optional(),
-		});
-	}
-
-	return false;
+const Event = z.object({
+	name: z.string(),
+	handler: z.function(),
 });
 
-const pluginConfigSchema = yup.object().shape({
-	events: yup.array().optional(),
-	hooks: yup
-		.object()
-		.shape({
-			init: yup
-				.object()
-				.test({
-					name: 'init',
-					exclusive: true,
-					// eslint-disable-next-line no-template-curly-in-string
-					message: '${path} must be a function',
-					test: (value) => typeof value === 'function',
-				})
-				.optional(),
-		})
-		.optional(),
-	contentTypes: yup.array().of(contentTypeConfig),
-	socket: yup.object().shape({ serverOptions: yup.object().optional() }).optional(),
+const InitHook = z.function();
+
+const Hooks = z.object({
+	init: InitHook.optional(),
+});
+
+const ContentTypeAction = z.enum(['create', 'update', 'delete']);
+
+const ContentType = z.object({
+	uid: z.string(),
+	actions: z.array(ContentTypeAction),
+});
+
+const Socket = z.object({ serverOptions: z.unknown().optional() });
+
+const plugin = z.object({
+	events: z.array(Event).optional(),
+	hooks: Hooks.optional(),
+	contentTypes: z.array(z.union([z.string(), ContentType])),
+	socket: Socket.optional(),
 });
 
 module.exports = {
-	pluginConfigSchema,
+	plugin,
 };
