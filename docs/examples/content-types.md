@@ -16,7 +16,9 @@ module.exports = ({ env }) => ({
 });
 ```
 
-The object format provides better control over which events a content type should emit. It accepts a uid and the actions array tat specifies the actions that should be emitted.
+The object format provides better control over which events a content type should emit. It accepts a uid and the actions array that specifies the actions that should be emitted.
+
+The accepted actions are `create`,`update`, and/or `delete`.
 
 ```js
 module.exports = ({ env }) => ({
