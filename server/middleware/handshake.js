@@ -23,7 +23,7 @@ async function handshake(socket, next) {
 	try {
 		let room;
 		if (strategy && strategy.length) {
-			const strategyType = strategy === 'jwt' ? 'io-role' : 'io-token';
+			const strategyType = strategy === 'jwt' ? 'role' : 'token';
 			const ctx = await strategyService[strategyType].authenticate(auth);
 			room = strategyService[strategyType].getRoomName(ctx);
 		} else if (strapi.plugin('users-permissions')) {
@@ -32,18 +32,18 @@ async function handshake(socket, next) {
 				.query('plugin::users-permissions.role')
 				.findOne({ where: { type: 'public' }, select: ['id', 'name'] });
 
-			room = strategyService['io-role'].getRoomName(role);
+			room = strategyService['role'].getRoomName(role);
 		}
 
 		if (room) {
-			socket.join(room);
+			socket.join(room.replace(' ', '-'));
 		} else {
-			throw Error('No valid room found');
+			throw new Error('No valid room found');
 		}
 
 		next();
 	} catch (error) {
-		next(error);
+		next(new Error(error.message));
 	}
 }
 
