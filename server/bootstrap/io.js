@@ -19,11 +19,11 @@ async function bootstrapIO({ strapi }) {
 	strapi.$io = io;
 
 	// add any io server events
-	if (settings.events && Object.keys(settings.events).length) {
+	if (settings.events?.length) {
 		strapi.$io.server.on('connection', (socket) => {
-			for (const [eventName, event] of Object.entries(settings.events)) {
+			for (const event of settings.events) {
 				// "connection" event should be executed immediately
-				if (eventName === 'connection') {
+				if (event.name === 'connection') {
 					event.handler({ strapi, io }, socket);
 				} else {
 					// register all other events to be triggered at a later time
