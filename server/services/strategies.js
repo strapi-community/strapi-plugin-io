@@ -21,7 +21,7 @@ module.exports = ({ strapi }) => {
 		},
 		authenticate: async function (auth) {
 			// adapted from https://github.com/strapi/strapi/blob/main/packages/plugins/users-permissions/server/strategies/users-permissions.js#L12
-			const token = jwtService.verify(auth.token);
+			const token = await jwtService.verify(auth.token);
 
 			if (!token) {
 				throw new UnauthorizedError('Invalid credentials');
