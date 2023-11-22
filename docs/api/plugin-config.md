@@ -2,14 +2,14 @@
 
 ## events
 
-- type `object`
-- default `{}`
+- type `array`
+- default `[]`
 
 > Defines the server side socket events to listen to.
 
-The keys of the object will be used for the event names.
+Each server side event will be made up of the following properties
 
-### Properties
+### Event Properties
 
 #### handler
 
@@ -34,20 +34,22 @@ module.exports = ({ env }) => ({
 	io: {
 		enabled: true,
 		config: {
-			events: {
-				connection: {
+			events: [
+				{
+					name: 'connection',
 					handler({ strapi, io }, socket) {
 						// will log whenever a socket connects
 						strapi.log.info(`[io] new connection with id ${socket.id}`);
 					},
 				},
-				'custom-event-name': {
+				{
+					name: 'custom-event-name',
 					handler({ strapi, io }, socket, x, y) {
 						// will log whenever 'custom-event-name' is called by a socket
 						strapi.log.info(`[io] hello from custom event location ${x} ${y}`);
 					},
 				},
-			},
+			],
 		},
 	},
 	// ...
@@ -103,15 +105,7 @@ module.exports = ({ env }) => ({
 ## hooks
 
 - type `object`
-- default
-
-```js
-{
-	hooks: {
-		init() {},
-	},
-}
-```
+- default `{}`
 
 > Hooks are similar in concept to model lifecyces in strapi. They are functions called at specific points in the plugin lifecycle.
 

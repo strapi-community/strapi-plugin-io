@@ -26,7 +26,7 @@ module.exports = ({ env }) => ({
 	io: {
 		enabled: true,
 		config: {
-			// This will listen for all supported events on the artice content type
+			// This will listen for all supported events on the article content type
 			contentTypes: ['api::article.article'],
 		},
 	},
@@ -40,9 +40,7 @@ The plugins.js file does not exist by default, if this is a new project it will 
 
 3. Connect a client socket to listen for events.
 
-::: info Note
-Authentication is handled automatically by the plugin. Clients are added to rooms based on the role/token used during the socket handshake. The public room is whatever role is set as default in the [advanced settings of users-permissions plugin](https://docs.strapi.io/user-docs/settings/configuring-users-permissions-plugin-settings#configuring-advanced-settings).
-:::
+Authentication is handled automatically by the plugin. Connections are added to rooms based on the name of role/token used in auth. Connections are placed in the Public Role room if no strategy is provided.
 
 :::: code-group
 
@@ -77,12 +75,14 @@ socket.on('connect', () => {
 
 ```js [JWT]
 /**
- * Connect as ac authorized user. Events will be received based on the role associated with it.
+ * Connect as an authorized user using JWT.
+ * Events will be received based on the role permissions.
  */
 
 const { io } = require('socket.io-client');
 // URL to your strapi instance
 const SERVER_URL = 'http://localhost:1337';
+// generated token returned after sign in
 const JWT_TOKEN = '123456';
 
 // connect the socket
@@ -110,20 +110,23 @@ socket.on('connect', () => {
 });
 ```
 
-```js [Access Token]
+```js [API Token]
 /**
- * Connect as ac authorized user. Events will be received based on the token type permissions associated with it.
+ * Connect as an authorized user using an API Token.
+ * Events will be received based on the tokens permissions.
  */
 
 const { io } = require('socket.io-client');
 // URL to your strapi instance
 const SERVER_URL = 'http://localhost:1337';
+
+// API Token from Settings -> Global Settings -> API Tokens in the dashboard
 const ACCESS_TOKEN = '123456';
 
 // connect the socket
 const socket = io(SERVER_URL, {
 	auth: {
-		stragey: 'apiToken' // jwt is the default strategy if none is provided
+		stragey: 'apiToken'
 		token: ACCESS_TOKEN,
 	},
 });

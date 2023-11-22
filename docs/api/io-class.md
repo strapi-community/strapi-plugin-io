@@ -6,7 +6,7 @@ The io class represents the server socket instance and is accessibe on the strap
 
 ### Emit
 
-The emit method sends data to all roles and/or tokens that have permission for the content types action that triggered the action. The current supported actions are `create`,`update`, and `delete`.
+The emit method sends data to all roles/tokens that have permission for the content types action that triggered the action. The current supported actions are `create`,`update`, and `delete`.
 
 All auto events emitted are namespaced by the content types singularName followed by the action in the format of `singularName:action` (i.e. `article:create`).
 
@@ -43,7 +43,7 @@ strapi.$io.emit({ event: 'customAction', schema, data });
 The raw method lets you emit events with any name and data you may want.
 
 ::: warning
-It will **note** sanitize or transform the data, whatever it receives will be emitted.
+It will **NOT** sanitize or transform the data, whatever it receives will be emitted.
 :::
 
 The function has the following signature
