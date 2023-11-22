@@ -2,7 +2,7 @@ import { defineConfig } from 'vitepress';
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-	title: 'strapi-plugin-io',
+	title: 'Strapi Plugin IO',
 	lastUpdated: true,
 	description: 'A plugin for Socket IO integration with Strapi CMS.',
 	themeConfig: {
@@ -29,7 +29,6 @@ export default defineConfig({
 					{ text: 'Events', link: '/examples/events' },
 					{ text: 'Content Types', link: '/examples/content-types' },
 					{ text: 'Hooks', link: '/examples/hooks' },
-					{ text: 'Socket', link: '/examples/socket' },
 				],
 			},
 		],
