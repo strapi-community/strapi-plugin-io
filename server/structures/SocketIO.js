@@ -58,7 +58,7 @@ class SocketIO {
 						// transform
 						const data = transformService.response({ data: sanitizedData, schema });
 						// emit
-						this._socket.to(roomName.replace(' ', '-')).emit(eventName, { ...data, roomName });
+						this._socket.to(roomName.replace(' ', '-')).emit(eventName, { ...data });
 					}
 				}
 			}
