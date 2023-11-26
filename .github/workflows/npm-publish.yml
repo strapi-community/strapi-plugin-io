@@ -19,11 +19,8 @@ jobs:
           node-version: '18.x'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Install Yarn
-        run: npm install -g yarn
-
       - name: Clean install deps
-        run: yarn install --frozen-lockfile
+        run: npm ci
 
       - name: Publish to NPM
         run: npm publish
