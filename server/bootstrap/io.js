@@ -27,7 +27,7 @@ async function bootstrapIO({ strapi }) {
 					event.handler({ strapi, io }, socket);
 				} else {
 					// register all other events to be triggered at a later time
-					socket.on(eventName, (...args) => event.handler({ strapi, io }, socket, ...args));
+					socket.on(event.name, (...args) => event.handler({ strapi, io }, socket, ...args));
 				}
 			}
 		});
