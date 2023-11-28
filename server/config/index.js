@@ -5,7 +5,7 @@ const { plugin } = require('./schema');
 module.exports = {
 	default() {
 		return {
-			events: {},
+			events: [],
 			hooks: {},
 			socket: { serverOptions: { cors: { origin: 'http://127.0.0.1:8080', methods: ['GET', 'POST'] } } },
 		};
