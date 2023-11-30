@@ -41,7 +41,9 @@ module.exports = ({ strapi }) => {
 				throw new UnauthorizedError('Invalid credentials');
 			}
 
-			const advancedSettings = await getAdvancedSettings();
+			const advancedSettings = await strapi
+				.store({ type: 'plugin', name: 'users-permissions' })
+				.get({ key: 'advanced' });
 
 			// User not confirmed
 			if (advancedSettings.email_confirmation && !user.confirmed) {
