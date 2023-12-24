@@ -4,6 +4,10 @@
 This plugin is compatible with Strapi v4.x only. While it may work with the older Strapi versions, they are not supported. It is recommended to always use the latest version of Strapi.
 :::
 
+::: warning Data Transfer Compatibility
+ If this plugin is active when the `strapi transfer` command is triggered, the transfer command will fail. You will need to **temporarily disable this plugin** or ensure that your websocket server is running on a different port than the Strapi server, or a on a specific route within Strapi to use the transfer command. See [issue-76](https://github.com/ComfortablyCoding/strapi-plugin-io/issues/76) for any additional informatin.
+:::
+
 1. Install the plugin in the root directory of your strapi project.
 
 :::: code-group
