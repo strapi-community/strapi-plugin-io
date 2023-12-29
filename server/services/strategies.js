@@ -1,6 +1,7 @@
 'use strict';
 
 const { castArray, isNil, pipe, every } = require('lodash/fp');
+const { differenceInHours, parseISO } = require('date-fns');
 const { getService } = require('../utils/getService');
 const { UnauthorizedError, ForbiddenError } = require('@strapi/utils').errors;
 
@@ -101,8 +102,10 @@ module.exports = ({ strapi }) => {
 				throw new UnauthorizedError('Invalid credentials');
 			}
 
-			const apiToken = await strapi.entityService.findOne('admin::api-token', apiTokenService.hash(token), {
-				fields: ['id', 'name', 'lastUsedAt', 'expiresAt'],
+			const apiToken = await strapi.query('admin::api-token').findOne({
+				where: { accessKey: apiTokenService.hash(token) },
+				select: ['id', 'name', 'type', 'lastUsedAt', 'expiresAt'],
+				populate: ['permissions'],
 			});
 
 			// token not found
@@ -120,8 +123,7 @@ module.exports = ({ strapi }) => {
 			}
 
 			// update lastUsedAt if the token has not been used in the last hour
-			const hoursSinceLastUsed = differenceInHours(currentDate, parseISO(apiToken.lastUsedAt));
-			if (hoursSinceLastUsed >= 1) {
+			if (!apiToken.lastUsedAt || differenceInHours(currentDate, parseISO(apiToken.lastUsedAt)) >= 1) {
 				await strapi.query('admin::api-token').update({
 					where: { id: apiToken.id },
 					data: { lastUsedAt: currentDate },
