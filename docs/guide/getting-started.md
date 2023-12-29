@@ -5,7 +5,7 @@ This plugin is compatible with Strapi v4.x only. While it may work with the olde
 :::
 
 ::: warning Data Transfer Compatibility
- If this plugin is active when the `strapi transfer` command is triggered, the transfer command will fail. You will need to **temporarily disable this plugin** or ensure that your websocket server is running on a different port than the Strapi server, or a on a specific route within Strapi to use the transfer command. See [issue-76](https://github.com/ComfortablyCoding/strapi-plugin-io/issues/76) for any additional informatin.
+If this plugin is active when the `strapi transfer` command is triggered, the transfer command will fail. You will need to **temporarily disable this plugin** or ensure that your websocket server is running on a different port than the Strapi server, or a on a specific route within Strapi to use the transfer command. See [issue-76](https://github.com/ComfortablyCoding/strapi-plugin-io/issues/76) for any additional informatin.
 :::
 
 1. Install the plugin in the root directory of your strapi project.
@@ -81,6 +81,7 @@ socket.on('connect', () => {
 /**
  * Connect as an authorized user using JWT.
  * Events will be received based on the role permissions.
+ * This is the default strategy used.
  */
 
 const { io } = require('socket.io-client');
@@ -92,7 +93,7 @@ const JWT_TOKEN = '123456';
 // connect the socket
 const socket = io(SERVER_URL, {
 	auth: {
-		stragey: 'jwt' // jwt is the default strategy if none is provided
+		strategy: 'jwt',
 		token: JWT_TOKEN,
 	},
 });
@@ -100,15 +101,15 @@ const socket = io(SERVER_URL, {
 //  wait until socket connects before adding event listeners
 socket.on('connect', () => {
 	socket.on('article:create', (data) => {
-		console.log('article created!')
+		console.log('article created!');
 		console.log(data);
 	});
 	socket.on('article:update', (data) => {
-		console.log('article updated!')
+		console.log('article updated!');
 		console.log(data);
 	});
 	socket.on('article:delete', (data) => {
-		console.log('article deleted!')
+		console.log('article deleted!');
 		console.log(data);
 	});
 });
@@ -130,7 +131,7 @@ const ACCESS_TOKEN = '123456';
 // connect the socket
 const socket = io(SERVER_URL, {
 	auth: {
-		stragey: 'apiToken'
+		strategy: 'apiToken',
 		token: ACCESS_TOKEN,
 	},
 });
@@ -138,15 +139,15 @@ const socket = io(SERVER_URL, {
 //  wait until socket connects before adding event listeners
 socket.on('connect', () => {
 	socket.on('article:create', (data) => {
-		console.log('article created!')
+		console.log('article created!');
 		console.log(data);
 	});
 	socket.on('article:update', (data) => {
-		console.log('article updated!')
+		console.log('article updated!');
 		console.log(data);
 	});
 	socket.on('article:delete', (data) => {
-		console.log('article deleted!')
+		console.log('article deleted!');
 		console.log(data);
 	});
 });
