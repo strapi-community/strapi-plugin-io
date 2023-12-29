@@ -92,7 +92,7 @@ const JWT_TOKEN = '123456';
 // connect the socket
 const socket = io(SERVER_URL, {
 	auth: {
-		stragey: 'jwt' // jwt is the default strategy if none is provided
+		strategy: 'jwt',
 		token: JWT_TOKEN,
 	},
 });
@@ -130,7 +130,7 @@ const ACCESS_TOKEN = '123456';
 // connect the socket
 const socket = io(SERVER_URL, {
 	auth: {
-		stragey: 'apiToken'
+		strategy: 'apiToken',
 		token: ACCESS_TOKEN,
 	},
 });
