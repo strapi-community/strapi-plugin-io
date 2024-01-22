@@ -180,9 +180,16 @@ module.exports = ({ strapi }) => {
 			return strapi.entityService.findMany('admin::api-token', {
 				fields: ['id', 'type', 'name'],
 				filters: {
-					expiresAt: {
-						$gte: new Date(),
-					},
+					$or: [
+						{
+							expiresAt: {
+								$gte: new Date(),
+							},
+						},
+						{
+							expiresAt: null,
+						},
+					],
 				},
 				populate: { permissions: true },
 			});
