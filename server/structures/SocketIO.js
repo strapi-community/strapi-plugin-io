@@ -4,6 +4,7 @@ const { Server } = require('socket.io');
 const { handshake } = require('../middleware');
 const { getService } = require('../utils/getService');
 const { pluginId } = require('../utils/pluginId');
+const { API_TOKEN_TYPE } = require('../utils/constants');
 
 class SocketIO {
 	constructor(options) {
@@ -36,7 +37,7 @@ class SocketIO {
 					const permissions = room.permissions.map(({ action }) => ({ action }));
 					const ability = await strapi.contentAPI.permissions.engine.generateAbility(permissions);
 
-					if (ability.can(schema.uid + '.' + event)) {
+					if (room.type === API_TOKEN_TYPE.FULL_ACCESS || ability.can(schema.uid + '.' + event)) {
 						// sanitize
 						const sanitizedData = await sanitizeService.output({
 							data: rawData,
