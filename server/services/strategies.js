@@ -3,13 +3,8 @@
 const { castArray, isNil, pipe, every } = require('lodash/fp');
 const { differenceInHours, parseISO } = require('date-fns');
 const { getService } = require('../utils/getService');
+const { API_TOKEN_TYPE } = require('../utils/constants');
 const { UnauthorizedError, ForbiddenError } = require('@strapi/utils').errors;
-
-const API_TOKEN_TYPE = {
-	READ_ONLY: 'read-only',
-	FULL_ACCESS: 'full-access',
-	CUSTOM: 'custom',
-};
 
 module.exports = ({ strapi }) => {
 	const apiTokenService = getService({ type: 'admin', plugin: 'api-token' });
@@ -180,9 +175,16 @@ module.exports = ({ strapi }) => {
 			return strapi.entityService.findMany('admin::api-token', {
 				fields: ['id', 'type', 'name'],
 				filters: {
-					expiresAt: {
-						$gte: new Date(),
-					},
+					$or: [
+						{
+							expiresAt: {
+								$gte: new Date(),
+							},
+						},
+						{
+							expiresAt: null,
+						},
+					],
 				},
 				populate: { permissions: true },
 			});
