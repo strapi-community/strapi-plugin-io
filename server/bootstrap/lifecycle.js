@@ -17,11 +17,24 @@ async function bootstrapLifecycles({ strapi }) {
 		if (!ct.actions || ct.actions.includes('create')) {
 			const eventType = 'create';
 			subscriber.afterCreate = async (event) => {
-				strapi.$io.emit({
+				const base = {
 					event: eventType,
 					schema: event.model,
 					data: event.result,
-				});
+				};
+
+				try {
+					const query = buildEventQuery({ event });
+					const data = await strapi.entityService.findMany(uid, query);
+
+					if (data[0]) {
+						base.data = data[0];
+					}
+				} catch (e) {
+					console.error('afterCreate', e);
+				}
+
+				strapi.$io.emit(base);
 			};
 			subscriber.afterCreateMany = async (event) => {
 				const query = buildEventQuery({ event });
@@ -42,11 +55,24 @@ async function bootstrapLifecycles({ strapi }) {
 		if (!ct.actions || ct.actions.includes('update')) {
 			const eventType = 'update';
 			subscriber.afterUpdate = async (event) => {
-				strapi.$io.emit({
+				const base = {
 					event: eventType,
 					schema: event.model,
 					data: event.result,
-				});
+				};
+
+				try {
+					const query = buildEventQuery({ event });
+					const data = await strapi.entityService.findMany(uid, query);
+
+					if (data[0]) {
+						base.data = data[0];
+					}
+				} catch (e) {
+					console.error('afterUpdate', e);
+				}
+
+				strapi.$io.emit(base);
 			};
 			subscriber.beforeUpdateMany = async (event) => {
 				const query = buildEventQuery({ event });
@@ -119,6 +145,7 @@ function buildEventQuery({ event }) {
 
 	if (event.params.where) {
 		query.filters = event.params.where;
+		query.populate = '*';
 	}
 
 	if (event.result?.count) {
@@ -127,10 +154,25 @@ function buildEventQuery({ event }) {
 		query.limit = event.params.limit;
 	}
 
-	if (event.action === 'afterCreateMany') {
-		query.filters = { id: event.result.ids };
-	} else if (event.action === 'beforeUpdate') {
-		query.fields = ['id'];
+	switch (event.action) {
+		case 'afterCreate': {
+			query.filters = {
+				id: event.result.id,
+			};
+			query.populate = '*';
+			break;
+		}
+		case 'afterCreateMany': {
+			query.filters = {
+				id: event.result.ids,
+			};
+			query.populate = '*';
+			break;
+		}
+		case 'beforeUpdate': {
+			query.fields = ['id'];
+			break;
+		}
 	}
 
 	return query;
